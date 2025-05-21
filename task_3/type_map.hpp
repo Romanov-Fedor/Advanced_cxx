@@ -9,22 +9,22 @@
 
 namespace type_list {
 
-struct AnyValue {
-  virtual ~AnyValue() = default;
+struct AnyVar {
+  virtual ~AnyVar() = default;
 };
 
 template <typename T>
-struct ValueHolder : AnyValue {
+struct VarContainer : AnyVar {
   T value;
 
-  explicit ValueHolder(const T& val) : value(val) {}
-  explicit ValueHolder(T&& val) : value(std::move(val)) {}
+  explicit VarContainer(const T& val) : value(val) {}
+  explicit VarContainer(T&& val) : value(std::move(val)) {}
 };
 
 template <typename... Keys>
 class TypeMap {
  private:
-  std::unique_ptr<AnyValue> values[sizeof...(Keys)];
+  std::unique_ptr<AnyVar> values[sizeof...(Keys)];
 
   template <typename Key>
   static constexpr std::size_t GetIndex() {
@@ -38,7 +38,7 @@ class TypeMap {
   template <typename Key>
   void AddValue(Key&& value) {
     constexpr std::size_t index = GetIndex<Key>();
-    values[index] = std::make_unique<ValueHolder<std::decay_t<Key>>>(
+    values[index] = std::make_unique<VarContainer<std::decay_t<Key>>>(
         std::forward<Key>(value));
   }
 
@@ -49,7 +49,7 @@ class TypeMap {
     if (!values[index]) {
       throw std::runtime_error("Value not set for this key");
     }
-    return static_cast<ValueHolder<Key>*>(values[index].get())->value;
+    return static_cast<VarContainer<Key>*>(values[index].get())->value;
   }
 
   // Проверка наличия значения по типу ключа

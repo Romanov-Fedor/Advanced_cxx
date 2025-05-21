@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.25)
 set(CMAKE_CXX_STANDARD 20)
-project(advanced_cpp)
+project(cxx_hw)
 
 file(GLOB TASKS LIST_DIRECTORIES true "${CMAKE_CURRENT_SOURCE_DIR}/task_*")
 

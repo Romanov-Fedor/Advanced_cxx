@@ -16,10 +16,10 @@ struct TypeList<> {
 // Непустой TypeList
 template <typename T, typename... Rest>
 struct TypeList<T, Rest...> {
-  using Head = T;
-  using Tail = TypeList<Rest...>;
+  using Start = T;
+  using End = TypeList<Rest...>;
 
-  static constexpr std::size_t size = 1 + Tail::size;
+  static constexpr std::size_t size = 1 + End::size;
 };
 
 // Получение элемента по индексу
@@ -56,10 +56,10 @@ struct Contains<T, TypeList<>> {
 };
 
 // Специализация для непустого списка
-template <typename T, typename Head, typename... Rest>
-struct Contains<T, TypeList<Head, Rest...>> {
+template <typename T, typename Start, typename... Rest>
+struct Contains<T, TypeList<Start, Rest...>> {
   static constexpr bool value =
-      std::is_same_v<T, Head> || Contains<T, TypeList<Rest...>>::value;
+      std::is_same_v<T, Start> || Contains<T, TypeList<Rest...>>::value;
 };
 
 // Получение индекса типа в списке
@@ -79,8 +79,8 @@ struct IndexOf<T, TypeList<T, Rest...>, Index> {
 };
 
 // Специализация для непустого списка (тип не совпадает)
-template <typename T, typename Head, typename... Rest, std::size_t Index>
-struct IndexOf<T, TypeList<Head, Rest...>, Index> {
+template <typename T, typename Start, typename... Rest, std::size_t Index>
+struct IndexOf<T, TypeList<Start, Rest...>, Index> {
   static constexpr std::size_t value =
       IndexOf<T, TypeList<Rest...>, Index + 1>::value;
 };
